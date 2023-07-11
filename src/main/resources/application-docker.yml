@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://${MYSQL_HOST}/irrigation-service?createDatabaseIfNotExist=true
+  jpa:
+    hibernate:
+      ddl-auto: none
+      open-in-view: false
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
