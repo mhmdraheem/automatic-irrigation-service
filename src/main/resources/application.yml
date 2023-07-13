@@ -12,8 +12,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-      open-in-view: false
+    open-in-view: false
     properties:
       hibernate:
         show_sql: true
-        format_sql: true
+logging:
+  file:
+    name: irrigation-service.log
+  pattern:
+    console: "%black(%d{ISO8601}) %highlight(%-5level) [trace-id=%X{traceId}] [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable"
+    file: "%d %p %C{1.} [trace-id=%X{traceId}] [%t] %m%n"
