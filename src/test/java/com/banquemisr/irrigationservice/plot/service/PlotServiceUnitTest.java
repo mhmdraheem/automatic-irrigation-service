@@ -1,6 +1,7 @@
 package com.banquemisr.irrigationservice.plot.service;
 
 import com.banquemisr.irrigationservice.plot.dto.ConfigureIrrigationRequest;
+import com.banquemisr.irrigationservice.plot.dto.IrrigationSlot;
 import com.banquemisr.irrigationservice.plot.excpetion.InvalidSlotTimingException;
 import com.banquemisr.irrigationservice.plot.excpetion.OverlappingSlotsException;
 import com.banquemisr.irrigationservice.plot.repository.PlotRepository;
@@ -14,8 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalTime;
 import java.util.List;
-
-import static com.banquemisr.irrigationservice.plot.dto.ConfigureIrrigationRequest.IrrigationSlot;
 
 @ExtendWith(MockitoExtension.class)
 public class PlotServiceUnitTest {

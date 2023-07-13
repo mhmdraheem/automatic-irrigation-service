@@ -1,8 +1,6 @@
 package com.banquemisr.irrigationservice.plot.service;
 
-import com.banquemisr.irrigationservice.plot.dto.ConfigureIrrigationRequest;
-import com.banquemisr.irrigationservice.plot.dto.CreatePlotRequest;
-import com.banquemisr.irrigationservice.plot.dto.UpdatePlotRequest;
+import com.banquemisr.irrigationservice.plot.dto.*;
 import com.banquemisr.irrigationservice.plot.entity.Plot;
 import com.banquemisr.irrigationservice.plot.entity.PlotIrrigationSlot;
 import com.banquemisr.irrigationservice.plot.excpetion.InvalidSlotTimingException;
@@ -11,6 +9,8 @@ import com.banquemisr.irrigationservice.plot.excpetion.PlotAlreadyExistsExceptio
 import com.banquemisr.irrigationservice.plot.excpetion.PlotNotFoundException;
 import com.banquemisr.irrigationservice.plot.repository.PlotRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +18,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.banquemisr.irrigationservice.plot.dto.ConfigureIrrigationRequest.IrrigationSlot;
 
 @Service
 @AllArgsConstructor
@@ -94,7 +92,7 @@ public class PlotService {
     }
 
     private void validateSlotTiming(List<IrrigationSlot> slots) {
-        for(ConfigureIrrigationRequest.IrrigationSlot irrigationSlot : slots) {
+        for(IrrigationSlot irrigationSlot : slots) {
             LocalTime startTime = irrigationSlot.getStartTime();
             LocalTime endTime = irrigationSlot.getEndTime();
             if (startTime.equals(endTime) || startTime.isAfter(endTime)) {
@@ -105,10 +103,10 @@ public class PlotService {
 
     private void validateNotOverlappingSlots(List<IrrigationSlot> slots) {
         for(int i = 0; i< slots.size(); i++) {
-            ConfigureIrrigationRequest.IrrigationSlot s1 = slots.get(i);
+            IrrigationSlot s1 = slots.get(i);
             for(int j = 0; j < slots.size(); j++) {
                 if(i == j) continue; // prevent comparing same slot
-                ConfigureIrrigationRequest.IrrigationSlot s2 = slots.get(j);
+                IrrigationSlot s2 = slots.get(j);
                 if(s1.getStartTime().isBefore(s2.getEndTime()) && s2.getStartTime().isBefore(s1.getEndTime())) {
                     throw new OverlappingSlotsException();
                 }
@@ -122,7 +120,7 @@ public class PlotService {
                 .collect(Collectors.toList());
     }
 
-    private PlotIrrigationSlot createIrrigationEntity(ConfigureIrrigationRequest.IrrigationSlot irrigationSlotDto) {
+    private PlotIrrigationSlot createIrrigationEntity(IrrigationSlot irrigationSlotDto) {
         PlotIrrigationSlot plotIrrigationSlot = new PlotIrrigationSlot();
         plotIrrigationSlot.setStartTime(irrigationSlotDto.getStartTime());
         plotIrrigationSlot.setEndTime(irrigationSlotDto.getEndTime());
@@ -132,5 +130,37 @@ public class PlotService {
 
     private void configurePlot(Plot plot, List<PlotIrrigationSlot> plotIrrigationSlots) {
         plot.configureIrrigationSlots(plotIrrigationSlots);
+    }
+
+    @Transactional
+    public Page<PlotDetailsResponse> listPlots(int pageNum, int pageSize) {
+        Page<Plot> plotsPage = getPlotsPage(pageNum, pageSize);
+        return mapToPlotDetailsResponsePage(plotsPage);
+    }
+
+    private Page<Plot> getPlotsPage(int pageNum, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
+        return plotRepository.findPlotWithSlots(pageRequest);
+    }
+
+    private Page<PlotDetailsResponse> mapToPlotDetailsResponsePage(Page<Plot> plotsPage) {
+        return plotsPage.map(plot -> {
+            PlotDetailsResponse response = new PlotDetailsResponse();
+            response.setArea(plot.getArea());
+            response.setCode(plot.getCode());
+            response.setCropType(plot.getCropType());
+            response.setIrrigationSlots(plot.getIrrigationSlots().stream()
+                    .map(this::createIrrigationSlotDto)
+                    .collect(Collectors.toList()));
+            return response;
+        });
+    }
+
+    private IrrigationSlot createIrrigationSlotDto(PlotIrrigationSlot slotEntity) {
+        IrrigationSlot irrigationSlot = new IrrigationSlot();
+        irrigationSlot.setStartTime(slotEntity.getStartTime());
+        irrigationSlot.setEndTime(slotEntity.getEndTime());
+        irrigationSlot.setAmountLiters(slotEntity.getAmountLiters());
+        return irrigationSlot;
     }
 }
