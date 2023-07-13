@@ -6,6 +6,7 @@ services:
       - mysql-volume:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=test123
+      - TZ=Africa/Cairo
     ports:
       - "3306:3306"
     restart: always
