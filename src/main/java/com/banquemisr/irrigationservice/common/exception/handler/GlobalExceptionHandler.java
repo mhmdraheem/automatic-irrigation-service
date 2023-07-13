@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
                 .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
                 .collect(Collectors.joining("- "));
 
-        return new ErrorResponse("500", errors);
+        return new ErrorResponse(ex.getClass().getSimpleName(), errors);
     }
 
     @ExceptionHandler(BusinessException.class)
