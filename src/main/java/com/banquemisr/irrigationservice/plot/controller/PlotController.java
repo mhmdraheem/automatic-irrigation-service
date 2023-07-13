@@ -1,6 +1,7 @@
 package com.banquemisr.irrigationservice.plot.controller;
 
 import com.banquemisr.irrigationservice.plot.dto.CreatePlotRequest;
+import com.banquemisr.irrigationservice.plot.dto.UpdatePlotRequest;
 import com.banquemisr.irrigationservice.plot.service.PlotService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,11 @@ public class PlotController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createPlot(@Valid @RequestBody CreatePlotRequest createPlotRequest) {
         plotService.createPlot(createPlotRequest);
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePlot(@Valid @RequestBody UpdatePlotRequest updatePlotRequest) {
+        plotService.updatePlot(updatePlotRequest);
     }
 }

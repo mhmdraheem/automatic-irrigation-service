@@ -1,9 +1,11 @@
 package com.banquemisr.irrigationservice.plot.service;
 
 import com.banquemisr.irrigationservice.plot.dto.CreatePlotRequest;
+import com.banquemisr.irrigationservice.plot.dto.UpdatePlotRequest;
 import com.banquemisr.irrigationservice.plot.entity.Plot;
 import com.banquemisr.irrigationservice.plot.entity.PlotRepository;
 import com.banquemisr.irrigationservice.plot.excpetion.PlotAlreadyExistsException;
+import com.banquemisr.irrigationservice.plot.excpetion.PlotNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,5 +48,25 @@ public class PlotService {
 
     private void savePlot(Plot plot) {
         plotRepository.save(plot);
+    }
+
+    @Transactional
+    public void updatePlot(UpdatePlotRequest updatePlotRequest) {
+        Plot plot = findPlot(updatePlotRequest.getCode());
+        updatePlot(plot, updatePlotRequest);
+    }
+
+    private Plot findPlot(String plotCode) {
+        Optional<Plot> plot = findPlotByCode(plotCode);
+        if(plot.isEmpty()) {
+            throw new PlotNotFoundException(plotCode);
+        } else {
+            return plot.get();
+        }
+    }
+
+    private void updatePlot(Plot plot, UpdatePlotRequest updatePlotRequest) {
+        plot.setArea(updatePlotRequest.getArea());
+        plot.setCropType(updatePlotRequest.getCropType());
     }
 }
