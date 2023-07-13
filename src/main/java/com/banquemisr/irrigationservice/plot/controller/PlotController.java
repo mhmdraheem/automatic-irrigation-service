@@ -1,5 +1,6 @@
 package com.banquemisr.irrigationservice.plot.controller;
 
+import com.banquemisr.irrigationservice.plot.dto.ConfigureIrrigationRequest;
 import com.banquemisr.irrigationservice.plot.dto.CreatePlotRequest;
 import com.banquemisr.irrigationservice.plot.dto.UpdatePlotRequest;
 import com.banquemisr.irrigationservice.plot.service.PlotService;
@@ -28,5 +29,11 @@ public class PlotController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updatePlot(@Valid @RequestBody UpdatePlotRequest updatePlotRequest) {
         plotService.updatePlot(updatePlotRequest);
+    }
+
+    @PutMapping(path = "slots/configure", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void configurePlotIrrigationSlots(@Valid @RequestBody ConfigureIrrigationRequest configureIrrigationRequest) {
+        plotService.configurePlotIrrigationSlots(configureIrrigationRequest);
     }
 }

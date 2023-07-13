@@ -1,5 +1,6 @@
-package com.banquemisr.irrigationservice.plot.entity;
+package com.banquemisr.irrigationservice.plot.repository;
 
+import com.banquemisr.irrigationservice.plot.entity.Plot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
