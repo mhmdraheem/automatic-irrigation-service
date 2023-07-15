@@ -42,7 +42,7 @@ public class PlotIrrigationSlot {
     @Column(name = "status")
     private Status status = Status.READY;
 
-    @OneToMany(mappedBy = "slot", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<IrrigationJobHistory> irrigationTaskHistories;
 
     @Override
@@ -61,6 +61,7 @@ public class PlotIrrigationSlot {
     public enum Status {
         READY,
         IN_PROGRESS,
-        FAILED
+        FAILED,
+        DELETED
     }
 }

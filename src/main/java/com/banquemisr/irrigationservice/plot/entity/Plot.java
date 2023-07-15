@@ -34,7 +34,7 @@ public class Plot {
 
     public void configureIrrigationSlots(List<PlotIrrigationSlot> slots) {
         if(slots != null) {
-            this.irrigationSlots.clear();
+            this.irrigationSlots.forEach(slot -> slot.setStatus(PlotIrrigationSlot.Status.DELETED));
             for (PlotIrrigationSlot irrigation : slots) {
                 irrigation.setPlot(this);
                 this.irrigationSlots.add(irrigation);
