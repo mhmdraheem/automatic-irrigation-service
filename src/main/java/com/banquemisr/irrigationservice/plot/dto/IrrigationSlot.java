@@ -1,5 +1,6 @@
 package com.banquemisr.irrigationservice.plot.dto;
 
+import com.banquemisr.irrigationservice.plot.entity.PlotIrrigationSlot;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -22,6 +23,8 @@ public class IrrigationSlot {
     @NotNull
     @Positive
     private Integer amountLiters;
+
+    private PlotIrrigationSlot.Status status = PlotIrrigationSlot.Status.READY;
 
     @Override
     public boolean equals(Object o) {

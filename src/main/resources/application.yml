@@ -16,9 +16,21 @@ spring:
     properties:
       hibernate:
         show_sql: true
+
+irrigation:
+  scheduler:
+    fixed-rate: 60000
+    initial-delay: 5000
+  api:
+    base-url: "http://localhost:8080/api/sensor"
+    response-timeout: 10
+    retry:
+      max-attempts: 3
+      backoff: 1
+
 logging:
   file:
     name: irrigation-service.log
   pattern:
-    console: "%black(%d{ISO8601}) %highlight(%-5level) [trace-id=%X{traceId}] [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable"
-    file: "%d %p %C{1.} [trace-id=%X{traceId}] [%t] %m%n"
+    console: "%black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable"
+    file: "%d %p %C{1.} [%t] %m%n"

@@ -9,6 +9,7 @@ import com.banquemisr.irrigationservice.plot.excpetion.PlotAlreadyExistsExceptio
 import com.banquemisr.irrigationservice.plot.excpetion.PlotNotFoundException;
 import com.banquemisr.irrigationservice.plot.repository.PlotRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class PlotService {
@@ -125,6 +127,7 @@ public class PlotService {
         plotIrrigationSlot.setStartTime(irrigationSlotDto.getStartTime());
         plotIrrigationSlot.setEndTime(irrigationSlotDto.getEndTime());
         plotIrrigationSlot.setAmountLiters(irrigationSlotDto.getAmountLiters());
+        plotIrrigationSlot.setStatus(irrigationSlotDto.getStatus());
         return plotIrrigationSlot;
     }
 
@@ -161,6 +164,7 @@ public class PlotService {
         irrigationSlot.setStartTime(slotEntity.getStartTime());
         irrigationSlot.setEndTime(slotEntity.getEndTime());
         irrigationSlot.setAmountLiters(slotEntity.getAmountLiters());
+        irrigationSlot.setStatus(slotEntity.getStatus());
         return irrigationSlot;
     }
 }

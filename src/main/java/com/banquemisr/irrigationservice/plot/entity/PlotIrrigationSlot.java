@@ -1,5 +1,6 @@
 package com.banquemisr.irrigationservice.plot.entity;
 
+import com.banquemisr.irrigationservice.irrigation.entity.IrrigationJobHistory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -36,6 +38,13 @@ public class PlotIrrigationSlot {
     @JoinColumn(name = "plot_id", referencedColumnName = "id")
     private Plot plot;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status = Status.READY;
+
+    @OneToMany(mappedBy = "slot", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<IrrigationJobHistory> irrigationTaskHistories;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,5 +56,11 @@ public class PlotIrrigationSlot {
     @Override
     public int hashCode() {
         return Objects.hash(startTime, endTime);
+    }
+
+    public enum Status {
+        READY,
+        IN_PROGRESS,
+        FAILED
     }
 }
