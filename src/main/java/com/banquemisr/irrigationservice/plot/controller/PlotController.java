@@ -1,9 +1,7 @@
 package com.banquemisr.irrigationservice.plot.controller;
 
-import com.banquemisr.irrigationservice.plot.dto.ConfigureIrrigationRequest;
-import com.banquemisr.irrigationservice.plot.dto.CreatePlotRequest;
-import com.banquemisr.irrigationservice.plot.dto.PlotDetailsResponse;
-import com.banquemisr.irrigationservice.plot.dto.UpdatePlotRequest;
+import com.banquemisr.irrigationservice.plot.dto.*;
+import com.banquemisr.irrigationservice.plot.entity.projection.IrrigationPredictionResponse;
 import com.banquemisr.irrigationservice.plot.service.PlotService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -44,5 +42,12 @@ public class PlotController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void configurePlotIrrigationSlots(@Valid @RequestBody ConfigureIrrigationRequest configureIrrigationRequest) {
         plotService.configurePlotIrrigationSlots(configureIrrigationRequest);
+    }
+
+    @GetMapping(path = "/predict", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public IrrigationPredictionResponse predictIrrigation(
+            @Valid @RequestBody IrrigationPredictionRequest IrrigationPredictionRequest) {
+        return plotService.predictIrrigation(IrrigationPredictionRequest);
     }
 }

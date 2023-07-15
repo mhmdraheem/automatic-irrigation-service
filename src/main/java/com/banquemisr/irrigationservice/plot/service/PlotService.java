@@ -3,11 +3,11 @@ package com.banquemisr.irrigationservice.plot.service;
 import com.banquemisr.irrigationservice.plot.dto.*;
 import com.banquemisr.irrigationservice.plot.entity.Plot;
 import com.banquemisr.irrigationservice.plot.entity.PlotIrrigationSlot;
-import com.banquemisr.irrigationservice.plot.excpetion.InvalidSlotTimingException;
-import com.banquemisr.irrigationservice.plot.excpetion.OverlappingSlotsException;
-import com.banquemisr.irrigationservice.plot.excpetion.PlotAlreadyExistsException;
-import com.banquemisr.irrigationservice.plot.excpetion.PlotNotFoundException;
+import com.banquemisr.irrigationservice.plot.entity.projection.IrrigationPredictionResponse;
+import com.banquemisr.irrigationservice.plot.excpetion.*;
+import com.banquemisr.irrigationservice.plot.repository.PlotIrrigationSlotRepository;
 import com.banquemisr.irrigationservice.plot.repository.PlotRepository;
+import jakarta.persistence.Tuple;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class PlotService {
 
     private final PlotRepository plotRepository;
+    private final PlotIrrigationSlotRepository slotRepository;
 
     @Transactional
     public void createPlot(CreatePlotRequest createPlotRequest) {
@@ -166,5 +169,28 @@ public class PlotService {
         irrigationSlot.setAmountLiters(slotEntity.getAmountLiters());
         irrigationSlot.setStatus(slotEntity.getStatus());
         return irrigationSlot;
+    }
+
+    public IrrigationPredictionResponse predictIrrigation(IrrigationPredictionRequest request) {
+        Tuple tuple = slotRepository.predictPlotIrrigation(request.getArea(), request.getCropType());
+        return createPredictionResponse(tuple);
+    }
+
+    private IrrigationPredictionResponse createPredictionResponse(Tuple tuple) {
+        if(tuple == null) {
+            throw new PredictionFailedException();
+        }
+
+        BigDecimal avgLeters = tuple.get("avgLiters", BigDecimal.class);
+        LocalTime minSlotTime = tuple.get("minSlotTime", Time.class).toLocalTime();
+        LocalTime maxSlotTime = tuple.get("maxSlotTime", Time.class).toLocalTime();
+        LocalTime avgSlotTime = tuple.get("avgSlotTime", Time.class).toLocalTime();
+
+        IrrigationPredictionResponse prediction = new IrrigationPredictionResponse();
+        prediction.setAvgLiters(avgLeters);
+        prediction.setMinSlotTime(minSlotTime);
+        prediction.setMaxSlotTime(maxSlotTime);
+        prediction.setAvgSlotTime(avgSlotTime);
+        return prediction;
     }
 }
