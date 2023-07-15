@@ -8,6 +8,10 @@ public class UpdatePlotRequest {
 
     @NotBlank
     private String code;
+
+    @NotBlank
     private String area;
+
+    @NotBlank
     private String cropType;
 }

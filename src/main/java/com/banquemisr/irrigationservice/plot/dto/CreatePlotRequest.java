@@ -10,7 +10,11 @@ public class CreatePlotRequest {
 
     @NotBlank
     private String code;
+
+    @NotBlank
     private String area;
+
+    @NotBlank
     private String cropType;
 
     @Override

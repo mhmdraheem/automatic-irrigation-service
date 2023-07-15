@@ -23,9 +23,11 @@ public class Plot {
     @Column(name = "code")
     private String code;
 
+    @NotBlank
     @Column(name = "area")
     private String area;
 
+    @NotBlank
     @Column(name = "crop_type")
     private String cropType;
 
