@@ -10,3 +10,7 @@ spring:
     properties:
       hibernate:
         show_sql: false
+
+irrigation:
+  alerting:
+    email: ${alerting_email}
