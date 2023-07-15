@@ -34,7 +34,7 @@ public class AlertingService {
         Mail mail = new Mail();
         mail.setTo(alertingEmail);
         mail.setSubject("Irrigation Failed!");
-        mail.setMessage(String.format("An error occurred during irrigating plot with code: %s at slot slot [%s-%s] ",
+        mail.setMessage(String.format("An error occurred during irrigating plot with code: %s at slot [%s-%s] ",
                 task.getPlotCode(),
                 task.getStartTime(),
                 task.getEndTime()));
