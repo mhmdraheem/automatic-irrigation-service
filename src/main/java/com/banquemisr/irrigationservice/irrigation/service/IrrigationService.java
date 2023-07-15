@@ -1,5 +1,6 @@
 package com.banquemisr.irrigationservice.irrigation.service;
 
+import com.banquemisr.irrigationservice.irrigation.alerting.AlertingService;
 import com.banquemisr.irrigationservice.irrigation.entity.IrrigationJobHistory;
 import com.banquemisr.irrigationservice.irrigation.job.Job;
 import com.banquemisr.irrigationservice.irrigation.repository.IrrigationTaskHistoryRepository;
@@ -24,15 +25,17 @@ public class IrrigationService {
     private final IrrigationTaskHistoryRepository irrigationTaskHistoryRepository;
     private final PlotIrrigationSlotRepository irrigationSlotRepository;
     private final IrrigationService selfRef;
+    private final AlertingService alertingService;
 
     public IrrigationService(IrrigationApiClient irrigationApiClient,
                              IrrigationTaskHistoryRepository irrigationTaskHistoryRepository,
                              PlotIrrigationSlotRepository irrigationSlotRepository,
-                             @Lazy IrrigationService selfRef) {
+                             @Lazy IrrigationService selfRef, AlertingService alertingService) {
         this.irrigationApiClient = irrigationApiClient;
         this.irrigationTaskHistoryRepository = irrigationTaskHistoryRepository;
         this.irrigationSlotRepository = irrigationSlotRepository;
         this.selfRef = selfRef;
+        this.alertingService = alertingService;
     }
 
     public void startIrrigation(Job job) {
@@ -96,6 +99,11 @@ public class IrrigationService {
         log.error("plot/slot: [{}/{}] failed to start irrigation", task.getPlotCode(), task.getSlotId(), error);
         updateSlotStatus(task.getSlotId(), Status.FAILED);
         logTask(task.getSlotId(), IrrigationJobHistory.Status.FAILED, jobInfo);
+        sendAlert(task);
+    }
+
+    private void sendAlert(PlotIrrigationTask task) {
+        alertingService.sendIrrigationFailureAlertAsync(task);
     }
 
     @Transactional

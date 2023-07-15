@@ -16,6 +16,17 @@ spring:
     properties:
       hibernate:
         show_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mrbioeng@gmail.com
+    password: bclmymiupwwpyarh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 irrigation:
   scheduler:
@@ -27,6 +38,11 @@ irrigation:
     retry:
       max-attempts: 3
       backoff: 1
+  alerting:
+    email: m.baset@zoho.com
+    retry:
+      max-attempts: 3
+      backoff: 5000
 
 logging:
   file:
